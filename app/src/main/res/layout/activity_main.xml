@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="10dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/app_bar_main2">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/textbox">
+
+   <TextView
+        android:id="@+id/clipboard_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+       android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:hint="Clipboard is empty!"
+        android:textColor="@color/tint"
+        android:textSize="15sp" />
+        <ImageView
+            android:id="@+id/save"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:tint="@color/tint"
+            android:layout_marginRight="4dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/save"
+
+            />
+        <ImageView
+            android:id="@+id/cut"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:tint="@color/tint"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/cut" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="30dp"
+            android:visibility="gone"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="center_vertical"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/shortl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/textbox">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:id="@+id/shortlink"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/tint"
+            android:textSize="15sp"
+            />
+        <ImageView
+            android:id="@+id/copy"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:tint="@color/tint"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/copy"
+            android:layout_marginRight="4dp"
+            />
+        <ImageView
+            android:id="@+id/sharelink"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:tint="@color/tint"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_baseline_share_24px"
+            android:layout_marginRight="8dp"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>
