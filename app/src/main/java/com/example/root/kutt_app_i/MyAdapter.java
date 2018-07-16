@@ -95,8 +95,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context,Dis.class);
-                i.putExtra("link",position);
-               // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("link",link);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
             }
         });

@@ -5,8 +5,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +43,7 @@ public class PagerFragment extends Fragment {
     String title_text;
     byte[] icon_array;
     WebView mWebview;
+    LinearLayout link_layout;
 
 
     public static PagerFragment newInstance(ListenItem item, int page_id ) {
@@ -76,6 +81,7 @@ public class PagerFragment extends Fragment {
         this.icon_view = view.findViewById(R.id.icon);
         this.link_view = view.findViewById(R.id.link);
         this.mWebview = view.findViewById(R.id.webview);
+        this.link_layout = view.findViewById(R.id.linear_link);
         link_view.setText(link);
 
         if(title_text == null ||  icon_array == null || title_text.equals("Web page not available")) {
@@ -144,6 +150,24 @@ public class PagerFragment extends Fragment {
             }
 
         }
+
+        link_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse(link);
+                CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+                intentBuilder.setShowTitle(true);
+                intentBuilder.setToolbarColor(ContextCompat.getColor(getActivity(), R.color.white));
+                intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(getActivity(), R.color.white));
+                intentBuilder.setStartAnimations(getActivity(), R.anim.zoom_enter, R.anim.zoom_exit);
+                intentBuilder.setExitAnimations(getActivity(), android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right);
+
+                CustomTabsIntent customTabsIntent = intentBuilder.build();
+                customTabsIntent.launchUrl(getActivity(), uri);
+            }
+        });
 
        // this.imageView = view.findViewById(R.id.imageView);
 

@@ -155,20 +155,8 @@ public class BackgroundActivity extends AppCompatActivity {
                 search_box.clearFocus();
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(search_box.getWindowToken(), 0);
-                int centerX = close.getRight();
-                int centerY = close.getBottom();
-                int startRadius = (int) Math.hypot(toolbar.getWidth(),toolbar.getHeight());
-                int endRadius = 0;
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Animator anim = ViewAnimationUtils.createCircularReveal
-                            (search_title, centerX, centerY, startRadius, endRadius);
-                    default_title.setVisibility(View.VISIBLE);
-                    anim.setDuration(500);
-                    anim.start();
-                }else {
-                    default_title.setVisibility(View.VISIBLE);
-                }
+                default_title.setVisibility(View.VISIBLE);
                 search_title.setVisibility(View.GONE);
                 if(fa==1) {
                     adapter = new MyAdapter(listenItems, getApplicationContext());
@@ -290,7 +278,6 @@ public class BackgroundActivity extends AppCompatActivity {
                 intentBuilder.setShowTitle(true);
                 intentBuilder.setToolbarColor(ContextCompat.getColor(BackgroundActivity.this, R.color.white));
                 intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(BackgroundActivity.this, R.color.white));
-
                 intentBuilder.setStartAnimations(BackgroundActivity.this, R.anim.slide_in_right, R.anim.slide_out_left);
                 intentBuilder.setExitAnimations(BackgroundActivity.this, android.R.anim.slide_in_left,
                         android.R.anim.slide_out_right);
@@ -393,6 +380,32 @@ public class BackgroundActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public  void onBackPressed(){
+        if(search_title.getVisibility() == View.VISIBLE){
+            sa=0;
+            search_box.clearFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(search_box.getWindowToken(), 0);
+
+            default_title.setVisibility(View.VISIBLE);
+            search_title.setVisibility(View.GONE);
+            if(fa==1) {
+                adapter = new MyAdapter(listenItems, getApplicationContext());
+            }else {
+                adapter = new MyAdapter(listenItems, BackgroundActivity.this);
+            }
+            recyclerView.setAdapter(adapter);
+            //adapter.notifyDataSetChanged();
+            default_title.setVisibility(View.VISIBLE);
+            search_title.setVisibility(View.GONE);
+            nomatch.setVisibility(View.GONE);
+            search_box.setText("");
+        }else {
+            super.onBackPressed();
+        }
     }
 
 
