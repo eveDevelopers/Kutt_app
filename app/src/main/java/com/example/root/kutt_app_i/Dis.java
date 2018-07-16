@@ -13,6 +13,7 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -43,10 +44,6 @@ public class Dis extends AppCompatActivity{
 
 
 
-    private int[] data,data1;
-    ViewPager viewPager;
-    private List<ListenItem> listenItems;
-    DatabaseHelper myDb;
     int pos;
     int value =-1;
     PageAdapter viewPageAdapter;
@@ -55,26 +52,21 @@ public class Dis extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dis);
-        listenItems = new ArrayList<>();
-        myDb = new DatabaseHelper(getApplicationContext());
         Intent i = getIntent();
         pos = i.getIntExtra("link",0);
         SharedPreferences p = getSharedPreferences("pos",MODE_PRIVATE);
         SharedPreferences.Editor ed = p.edit();
         ed.putInt("pos",pos);
         ed.commit();
-        initData();
-        initView();
-        viewPageAdapter = new PageAdapter(getSupportFragmentManager(), data);
        // PlaceholderFragment.getData(pos);
        // PlaceholderFragment.getAdapter(viewPageAdapter);
         overridePendingTransition(R.anim.zoom_enter, R.anim.zoom_exit);
         //viewPager = findViewById(R.id.vertical_viewPager);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),pos,viewPageAdapter);
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(1);
@@ -83,25 +75,6 @@ public class Dis extends AppCompatActivity{
         //Selected(pos);
         }
 
-    private void initData() {
-        Cursor res = myDb.getAllData();
-        while (res.moveToNext()) {
-            ListenItem item = new ListenItem(res.getInt(0),res.getString(1),res.getInt(2),res.getString(3),res.getBlob(4));
-            listenItems.add(item);
-        }
-        this.data = new int[listenItems.size()];
-        // this.data1 = new String[1];
-    }
-    private void initView() {
-        for (int i = 0; i < listenItems.size(); i++) {
-
-
-            this.data[i]=listenItems.get(i).getPos_in_db();
-        }
-
-        //viewPager.setAdapter(viewPageAdapter);
-       // viewPager.setCurrentItem(pos);
-    }
 
     @Override
     public  void onBackPressed(){
@@ -139,10 +112,7 @@ public class Dis extends AppCompatActivity{
 
 
 
-        public void passData(int pos,PageAdapter pga) {
-            position = pos;
-            viewPageadapter = pga;
-        }
+
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -165,25 +135,26 @@ public class Dis extends AppCompatActivity{
             SharedPreferences p = t.getSharedPreferences("pos",MODE_PRIVATE);
             position = p.getInt("pos",0);
             viewPager = rootView.findViewById(R.id.vertical_viewPager);
-            LinearLayout left = rootView.findViewById(R.id.left);
-            LinearLayout right = rootView.findViewById(R.id.right);
+            CardView left = rootView.findViewById(R.id.left);
+            CardView right = rootView.findViewById(R.id.right);
             myDb = new DatabaseHelper(t);
             Cursor res = myDb.getAllData();
             while (res.moveToNext()) {
                 ListenItem item = new ListenItem(res.getInt(0),res.getString(1),res.getInt(2),res.getString(3),res.getBlob(4));
                 listenItems.add(item);
             }
-            data = new int[listenItems.size()];
+           /* data = new int[listenItems.size()];
                 // this.data1 = new String[1];
             for (int i = 0; i < listenItems.size(); i++) {
                 data[i]=listenItems.get(i).getPos_in_db();
-            }
+            }*/
 
                 //viewPager.setAdapter(viewPageAdapter);
                 // viewPager.setCurrentItem(pos);
-            viewPageadapter = new PageAdapter(getChildFragmentManager(),data);
+            viewPageadapter = new PageAdapter(getChildFragmentManager(),listenItems);
             viewPager.setAdapter(viewPageadapter);
            viewPager.setCurrentItem(position);
+           viewPager.setOffscreenPageLimit(1);
 
 
 
@@ -216,16 +187,9 @@ public class Dis extends AppCompatActivity{
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        int position;
-        PageAdapter viewPageadapter;
-        PlaceholderFragment p;
 
-        public SectionsPagerAdapter(FragmentManager fm,int pos,PageAdapter pga) {
+        public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            position = pos;
-            viewPageadapter = pga;
-            p = new PlaceholderFragment();
-            p.passData(pos,pga);
         }
 
 
@@ -233,7 +197,7 @@ public class Dis extends AppCompatActivity{
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return p.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override

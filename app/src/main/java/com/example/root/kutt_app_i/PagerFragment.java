@@ -19,11 +19,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class PagerFragment extends Fragment {
 
 
-    private static final String KEY_POS = "key_pos";
+    private static final String KEY_LINK = "key_link";
+    private static final String KEY_TITLE = "key_title";
+    private static final String KEY_ICON = "key_icon";
     private static final String KEY_PAGE_ID = "key_page_id";
     private String link;
     private int pos;
@@ -37,11 +40,13 @@ public class PagerFragment extends Fragment {
     byte[] icon_array;
     WebView mWebview;
 
-    ImageView imageView,imageView2;
 
-    public static PagerFragment newInstance(int position, int page_id ) {
+    public static PagerFragment newInstance(ListenItem item, int page_id ) {
         Bundle args = new Bundle();
-        args.putInt(KEY_POS, position);
+       // List_item = item;
+        args.putString(KEY_LINK, item.getLink());
+        args.putString(KEY_TITLE,item.getTitle());
+        args.putByteArray(KEY_ICON,item.getIcon());
         args.putInt(KEY_PAGE_ID, page_id);
         PagerFragment fragment = new PagerFragment();
         fragment.setArguments(args);
@@ -53,11 +58,13 @@ public class PagerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         myDb = new DatabaseHelper(getActivity());
 
-
         Bundle bundle = getArguments();
         if (bundle != null) {
-            this.pos = bundle.getInt(KEY_POS);
             this.page_id = bundle.getInt(KEY_PAGE_ID);
+            this.link = bundle.getString(KEY_LINK);
+            this.icon_array = bundle.getByteArray(KEY_ICON);
+            this.title_text = bundle.getString(KEY_TITLE);
+
         }
     }
 
@@ -69,11 +76,6 @@ public class PagerFragment extends Fragment {
         this.icon_view = view.findViewById(R.id.icon);
         this.link_view = view.findViewById(R.id.link);
         this.mWebview = view.findViewById(R.id.webview);
-        this.res = myDb.preview_data(pos);
-        res.moveToNext();
-        this.title_text = res.getString(1);
-        this.icon_array = res.getBlob(0);
-        this.link = res.getString(2);
         link_view.setText(link);
 
         if(title_text == null ||  icon_array == null || title_text.equals("Web page not available")) {
@@ -162,7 +164,7 @@ public class PagerFragment extends Fragment {
                 startActivity(i);
             }
         });*/
-        view.setBackgroundColor(Color.WHITE);
+        //view.setBackgroundColor(Color.WHITE);
         return view;
     }
 
