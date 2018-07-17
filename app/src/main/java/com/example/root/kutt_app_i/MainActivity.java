@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_main2);
-        cameraView = findViewById(R.id.cameraView);
-        cameraView.setVisibility(View.GONE);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},PERMISSION_REQUEST);
         }
@@ -230,23 +228,32 @@ public class MainActivity extends AppCompatActivity  {
                 insertData();
             }
         });
-        qr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cameraView.getVisibility()==View.GONE){
-                    cameraView.setVisibility(View.VISIBLE);
-                }
-                else{
-                    cameraView.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+
 
 
     }
     @Override
     public void onResume(){
         super.onResume();
+        cameraView = findViewById(R.id.cameraView);
+        cameraView.setVisibility(View.INVISIBLE);
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cameraView.getVisibility()==View.INVISIBLE ){
+                    cameraView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    cameraView.setVisibility(View.INVISIBLE);
+                    cameraSource = new CameraSource.Builder(MainActivity.this,barcode)
+                            .setFacing(CameraSource.CAMERA_FACING_BACK)
+                            .setAutoFocusEnabled(true)
+                            .setRequestedFps(24)
+                            .setRequestedPreviewSize(1902,1024)
+                            .build();
+                }
+            }
+        });
         cameraView.setZOrderMediaOverlay(true);
         holder=cameraView.getHolder();
         barcode = new BarcodeDetector.Builder(this)
