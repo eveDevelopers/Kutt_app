@@ -128,10 +128,11 @@ public class MainActivity extends AppCompatActivity  {
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
+                                        String link = "http://kutt.fossgect.club/"+response;
                                         cut.setVisibility(View.VISIBLE);
                                         progressBar.setVisibility(View.GONE);
                                         sharel.setVisibility(View.VISIBLE);
-                                        shlink.setText(response);
+                                        shlink.setText(link);
                                         requestQueue.stop();
                                     }
                                 },
@@ -166,10 +167,11 @@ public class MainActivity extends AppCompatActivity  {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
+                                    String link = "http://kutt.fossgect.club/"+response;
                                     cut.setVisibility(View.VISIBLE);
                                     progressBar.setVisibility(View.GONE);
                                     sharel.setVisibility(View.VISIBLE);
-                                    shlink.setText(response);
+                                    shlink.setText(link);
                                     requestQueue.stop();
                                 }
                             },

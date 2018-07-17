@@ -130,6 +130,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
+                                        response = "http://kutt.fossgect.club/" + response;
                                         Intent i = new Intent();
                                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         i.setAction(Intent.ACTION_SEND);
@@ -182,6 +183,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
+                                    response = "http://kutt.fossgect.club/" + response;q
                                     Intent i = new Intent();
                                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     i.setAction(Intent.ACTION_SEND);

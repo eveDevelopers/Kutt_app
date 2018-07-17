@@ -138,6 +138,7 @@ public class TheService extends Service {
                                         new Response.Listener<String>() {
                                             @Override
                                             public void onResponse(String response) {
+                                                response = "http://kutt.fossgect.club/" + response;
                                                 String cc = clipboard.getText().toString();
                                                 Intent i = new Intent(Intent.ACTION_SEND);
                                                 i.setType("text/plain");
@@ -228,6 +229,7 @@ public class TheService extends Service {
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
+                                            response = "http://kutt.fossgect.club/" + response;
                                             String cc = clipboard.getText().toString();
                                             Intent i = new Intent(Intent.ACTION_SEND);
                                             i.setType("text/plain");
