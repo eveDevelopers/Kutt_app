@@ -1,5 +1,6 @@
 package com.example.root.kutt_app_i;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -8,16 +9,22 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +40,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,16 +54,26 @@ public class MainActivity extends AppCompatActivity  {
 
     DatabaseHelper myDb;
     TextView data,shlink,Bartitle;
-    ImageView save,cut,copy,sharelink,close;
+    ImageView save,cut,copy,sharelink,close,qr;
     String text;
     LinearLayout got,sharel;
     ProgressBar progressBar;
+    SurfaceView cameraView;
+    BarcodeDetector barcode;
+    CameraSource cameraSource;
+    SurfaceHolder holder;
+    public static  final int PERMISSION_REQUEST=200;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_bar_main2);
+        cameraView = findViewById(R.id.cameraView);
+        cameraView.setVisibility(View.GONE);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},PERMISSION_REQUEST);
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDb = new DatabaseHelper(this);
@@ -70,6 +92,7 @@ public class MainActivity extends AppCompatActivity  {
        // Intent intent = new Intent(MainActivity.this,TheService.class);
        // startService(intent);
         Bartitle = findViewById(R.id.toolbar_title);
+        qr=findViewById(R.id.qr);
         //profile = findViewById(R.id.profile);
         //got = findViewById(R.id.button);
         close = findViewById(R.id.close);
@@ -207,12 +230,97 @@ public class MainActivity extends AppCompatActivity  {
                 insertData();
             }
         });
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cameraView.getVisibility()==View.GONE){
+                    cameraView.setVisibility(View.VISIBLE);
+                }
+                else{
+                    cameraView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
 
     }
     @Override
     public void onResume(){
         super.onResume();
+        cameraView.setZOrderMediaOverlay(true);
+        holder=cameraView.getHolder();
+        barcode = new BarcodeDetector.Builder(this)
+                .setBarcodeFormats(Barcode.QR_CODE)
+                .build();
+
+        if(!barcode.isOperational())
+        {
+            Toast.makeText(getApplicationContext(),"sorry",Toast.LENGTH_LONG).show();
+            this.finish();
+        }
+
+        cameraSource = new CameraSource.Builder(this,barcode)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setAutoFocusEnabled(true)
+                .setRequestedFps(24)
+                .setRequestedPreviewSize(1902,1024)
+                .build();
+
+        cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+                try {
+                    if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
+
+                        cameraSource.start(cameraView.getHolder());
+                    }
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+        barcode.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {
+
+            }
+
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+                if(barcodes.size() >0){
+                   /* Intent intent = new Intent();
+                    intent.putExtra("barcode",barcodes.valueAt(0));
+                    setResult(RESULT_OK,intent);*/
+                    final Barcode barcode = barcodes.valueAt(0);
+                    text = barcode.displayValue;
+                    data.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            data.setText(text);
+                            receiveData(text);
+
+                        }
+                    });
+
+
+                }
+            }
+        });
+
         final ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
