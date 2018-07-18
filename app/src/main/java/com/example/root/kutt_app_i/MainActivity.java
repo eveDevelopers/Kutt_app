@@ -1,6 +1,8 @@
 package com.example.root.kutt_app_i;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -26,8 +28,11 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -63,6 +68,10 @@ public class MainActivity extends AppCompatActivity  {
     CameraSource cameraSource;
     SurfaceHolder holder;
     public static  final int PERMISSION_REQUEST=200;
+    ObjectAnimator animator;
+    View scannerLayout;
+    View scannerBar;
+    FrameLayout frameLayout;
 
 
     @Override
@@ -235,16 +244,56 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onResume(){
         super.onResume();
+        scannerLayout = findViewById(R.id.scannerLayout);
+        scannerBar = findViewById(R.id.scannerBar);
+
+        animator = null;
+
+        ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    scannerLayout.getViewTreeObserver().
+                            removeGlobalOnLayoutListener(this);
+
+                } else {
+                    scannerLayout.getViewTreeObserver().
+                            removeOnGlobalLayoutListener(this);
+                }
+
+                float destination = (float)(scannerLayout.getY() +
+                        scannerLayout.getHeight());
+
+                animator = ObjectAnimator.ofFloat(scannerBar, "translationY",
+                        scannerLayout.getY(),
+                        destination);
+
+                animator.setRepeatMode(ValueAnimator.REVERSE);
+                animator.setRepeatCount(ValueAnimator.INFINITE);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                animator.setDuration(3000);
+                animator.start();
+
+            }
+        });
+
+        frameLayout =findViewById(R.id.framecam);
         cameraView = findViewById(R.id.cameraView);
         cameraView.setVisibility(View.INVISIBLE);
+        frameLayout.setVisibility(View.INVISIBLE);
         qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cameraView.getVisibility()==View.INVISIBLE ){
+                if(cameraView.getVisibility()==View.INVISIBLE && frameLayout.getVisibility()==View.INVISIBLE){
                     cameraView.setVisibility(View.VISIBLE);
+                    frameLayout.setVisibility(View.VISIBLE);
                 }
                 else{
                     cameraView.setVisibility(View.INVISIBLE);
+                    frameLayout.setVisibility(View.INVISIBLE);
                     cameraSource = new CameraSource.Builder(MainActivity.this,barcode)
                             .setFacing(CameraSource.CAMERA_FACING_BACK)
                             .setAutoFocusEnabled(true)
