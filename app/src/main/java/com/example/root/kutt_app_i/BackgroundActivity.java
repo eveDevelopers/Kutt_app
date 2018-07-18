@@ -153,6 +153,7 @@ public class BackgroundActivity extends AppCompatActivity {
             public void onClick(View v) {
                 sa=0;
                 search_box.clearFocus();
+                //nomatch.setVisibility(View.GONE);
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(search_box.getWindowToken(), 0);
 
@@ -290,7 +291,9 @@ public class BackgroundActivity extends AppCompatActivity {
 
 
 
-
+        if(listenItems.isEmpty()){
+            nomatch.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -376,6 +379,7 @@ public class BackgroundActivity extends AppCompatActivity {
         }
         if(sa==0){
             adapter.notifyDataSetChanged();
+            nomatch.setVisibility(View.GONE);
         }
 
 

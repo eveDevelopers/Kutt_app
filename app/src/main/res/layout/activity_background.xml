@@ -23,7 +23,7 @@
         android:id="@+id/nomatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="no results found"
+        android:text="no links found"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

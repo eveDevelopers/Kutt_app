@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public  Cursor preview_data(int pos){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-        Cursor res = sqLiteDatabase.rawQuery("select ICON,TITLE,LINK from " + TBNAME + " where "+ COL1 + " =" + pos ,null);
+        Cursor res = sqLiteDatabase.rawQuery("select LINK from " + TBNAME + " where "+ COL1 + " =" + pos ,null);
         return  res;
 
     }
