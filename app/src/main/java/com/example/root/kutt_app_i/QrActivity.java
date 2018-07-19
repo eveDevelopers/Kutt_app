@@ -106,7 +106,7 @@ public class QrActivity extends AppCompatActivity {
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 .setRequestedFps(24)
-                .setRequestedPreviewSize(1902,1024)
+                .setRequestedPreviewSize(1920,1080)
                 .build();
 
         cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
@@ -191,7 +191,81 @@ public class QrActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        cameraView.setZOrderMediaOverlay(true);
+        holder=cameraView.getHolder();
+        barcode = new BarcodeDetector.Builder(this)
+                .setBarcodeFormats(Barcode.QR_CODE)
+                .build();
+
+        if(!barcode.isOperational())
+        {
+            Toast.makeText(getApplicationContext(),"sorry",Toast.LENGTH_LONG).show();
+            this.finish();
         }
+
+        cameraSource = new CameraSource.Builder(this,barcode)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
+                .setRequestedFps(24)
+                .setRequestedPreviewSize(1920,1080)
+                .build();
+
+        cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+                try {
+                    if(ContextCompat.checkSelfPermission(QrActivity.this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
+
+                        cameraSource.start(cameraView.getHolder());
+                    }
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+        barcode.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {
+
+            }
+
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+                if(barcodes.size() >0){
+                   /* Intent intent = new Intent();
+                    intent.putExtra("barcode",barcodes.valueAt(0));
+                    setResult(RESULT_OK,intent);*/
+
+                    Intent intent = new Intent();
+                    intent.putExtra("barcode",barcodes.valueAt(0));
+                    setResult(RESULT_OK,intent);
+                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    finish();
+
+
+                }
+            }
+        });
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        cameraSource.release();
+    }
 
     @Override
     public void onBackPressed(){
