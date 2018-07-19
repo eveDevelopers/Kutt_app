@@ -8,4 +8,5 @@
     <color name="white1">#a1a1a1</color>
     <color name="black1">#212121</color>
     <color name="black2">#111111</color>
+    <color name="semitransparent">#9A000000</color>
 </resources>

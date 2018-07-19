@@ -68,10 +68,11 @@ public class MainActivity extends AppCompatActivity  {
     CameraSource cameraSource;
     SurfaceHolder holder;
     public static  final int PERMISSION_REQUEST=200;
+    public  static final int REQUEST_CODE=100;
     ObjectAnimator animator;
     View scannerLayout;
     View scannerBar;
-    FrameLayout frameLayout;
+
 
 
     @Override
@@ -240,143 +241,19 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+
+
     }
     @Override
     public void onResume(){
         super.onResume();
-        scannerLayout = findViewById(R.id.scannerLayout);
-        scannerBar = findViewById(R.id.scannerBar);
-
-        animator = null;
-
-        ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    scannerLayout.getViewTreeObserver().
-                            removeGlobalOnLayoutListener(this);
-
-                } else {
-                    scannerLayout.getViewTreeObserver().
-                            removeOnGlobalLayoutListener(this);
-                }
-
-                float destination = (float)(scannerLayout.getY() +
-                        scannerLayout.getHeight());
-
-                animator = ObjectAnimator.ofFloat(scannerBar, "translationY",
-                        scannerLayout.getY(),
-                        destination);
-
-                animator.setRepeatMode(ValueAnimator.REVERSE);
-                animator.setRepeatCount(ValueAnimator.INFINITE);
-                animator.setInterpolator(new AccelerateDecelerateInterpolator());
-                animator.setDuration(3000);
-                animator.start();
-
-            }
-        });
-
-        frameLayout =findViewById(R.id.framecam);
-        cameraView = findViewById(R.id.cameraView);
-        cameraView.setVisibility(View.INVISIBLE);
-        frameLayout.setVisibility(View.INVISIBLE);
         qr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cameraView.getVisibility()==View.INVISIBLE && frameLayout.getVisibility()==View.INVISIBLE){
-                    cameraView.setVisibility(View.VISIBLE);
-                    frameLayout.setVisibility(View.VISIBLE);
-                }
-                else{
-                    cameraView.setVisibility(View.INVISIBLE);
-                    frameLayout.setVisibility(View.INVISIBLE);
-                    cameraSource = new CameraSource.Builder(MainActivity.this,barcode)
-                            .setFacing(CameraSource.CAMERA_FACING_BACK)
-                            .setAutoFocusEnabled(true)
-                            .setRequestedFps(24)
-                            .setRequestedPreviewSize(1902,1024)
-                            .build();
-                }
+                Intent i = new Intent(MainActivity.this,QrActivity.class);
+                startActivityForResult(i,REQUEST_CODE);
             }
         });
-        cameraView.setZOrderMediaOverlay(true);
-        holder=cameraView.getHolder();
-        barcode = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.QR_CODE)
-                .build();
-
-        if(!barcode.isOperational())
-        {
-            Toast.makeText(getApplicationContext(),"sorry",Toast.LENGTH_LONG).show();
-            this.finish();
-        }
-
-        cameraSource = new CameraSource.Builder(this,barcode)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setAutoFocusEnabled(true)
-                .setRequestedFps(24)
-                .setRequestedPreviewSize(1902,1024)
-                .build();
-
-        cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-
-                try {
-                    if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
-
-                        cameraSource.start(cameraView.getHolder());
-                    }
-                }
-                catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
-        });
-        barcode.setProcessor(new Detector.Processor<Barcode>() {
-            @Override
-            public void release() {
-
-            }
-
-            @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
-
-                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-                if(barcodes.size() >0){
-                   /* Intent intent = new Intent();
-                    intent.putExtra("barcode",barcodes.valueAt(0));
-                    setResult(RESULT_OK,intent);*/
-                    final Barcode barcode = barcodes.valueAt(0);
-                    text = barcode.displayValue;
-                    data.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            data.setText(text);
-                            receiveData(text);
-
-                        }
-                    });
-
-
-                }
-            }
-        });
-
         final ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -448,6 +325,26 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
         }
         //myDb.close();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data1) {
+        if(requestCode==REQUEST_CODE && resultCode==RESULT_OK){
+
+            if(data1!=null){
+
+                final Barcode barcode =data1.getParcelableExtra("barcode");
+                text = barcode.displayValue;
+                data.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        data.setText(text);
+                        receiveData(text);
+                    }
+                });
+
+            }
+
+        }
     }
 
 

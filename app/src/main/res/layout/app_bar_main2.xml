@@ -32,11 +32,13 @@
                     android:padding="3dp"
                     android:layout_marginRight="5dp"
                     android:src="@drawable/ic_baseline_close_24px"/>
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/qr"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_center_focus_strong_black_24dp"/>
+
+                   android:src="@drawable/ic_center_focus_strong_black_24dp"/>
+                   -->
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
