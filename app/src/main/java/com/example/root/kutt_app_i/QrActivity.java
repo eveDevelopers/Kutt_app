@@ -5,11 +5,13 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,14 +19,15 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.security.Policy;
 
 public class QrActivity extends AppCompatActivity {
 
@@ -32,16 +35,20 @@ public class QrActivity extends AppCompatActivity {
     BarcodeDetector barcode;
     CameraSource cameraSource;
     SurfaceHolder holder;
+    ImageView close_button,flash;
     public static  final int PERMISSION_REQUEST=200;
     ObjectAnimator animator;
     View scannerLayout;
     View scannerBar;
+    private boolean isFlashOn = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
+        close_button = findViewById(R.id.close_window);
+        flash = findViewById(R.id.flash);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},PERMISSION_REQUEST);
         }
@@ -97,7 +104,6 @@ public class QrActivity extends AppCompatActivity {
 
         cameraSource = new CameraSource.Builder(this,barcode)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setAutoFocusEnabled(true)
                 .setRequestedFps(24)
                 .setRequestedPreviewSize(1902,1024)
                 .build();
@@ -145,20 +151,53 @@ public class QrActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("barcode",barcodes.valueAt(0));
                     setResult(RESULT_OK,intent);
+                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                     finish();
 
 
                 }
             }
         });
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+                try {
+                    cameraSource.release();
+                }catch (Exception e){}
+
+                finish();
+            }
+        });
+        flash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFlashOn = !isFlashOn;
+                if(isFlashOn) {
+                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_off_24px));
+                }else {
+                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_on_24px));
+                }
+
+            }
+        });
+
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
         }
 
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        try {
+            cameraSource.release();
+        }catch (Exception e){}
+    }
 
 }
