@@ -163,9 +163,7 @@ public class QrActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                try {
-                    cameraSource.release();
-                }catch (Exception e){}
+                cameraSource.release();
 
                 finish();
             }
@@ -270,9 +268,8 @@ public class QrActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         super.onBackPressed();
-        try {
-            cameraSource.release();
-        }catch (Exception e){}
+        cameraSource.release();
+
     }
 
 }
