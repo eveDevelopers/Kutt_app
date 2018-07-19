@@ -104,6 +104,7 @@ public class QrActivity extends AppCompatActivity {
 
         cameraSource = new CameraSource.Builder(this,barcode)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 .setRequestedFps(24)
                 .setRequestedPreviewSize(1902,1024)
                 .build();
