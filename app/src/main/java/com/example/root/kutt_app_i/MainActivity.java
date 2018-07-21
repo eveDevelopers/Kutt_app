@@ -49,6 +49,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity  {
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
-
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 String receivedText = intent.getStringExtra(Intent.EXTRA_TEXT);

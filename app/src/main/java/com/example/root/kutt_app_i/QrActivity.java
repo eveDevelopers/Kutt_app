@@ -57,6 +57,10 @@ public class QrActivity extends AppCompatActivity {
 
         animator = null;
 
+        if(!getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+            flash.setVisibility(View.INVISIBLE);
+        }
+
         ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -172,13 +176,15 @@ public class QrActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 isFlashOn = !isFlashOn;
-                if(isFlashOn) {
-                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_off_24px));
-                }else {
-                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_on_24px));
-                }
+                try {
+                    if (isFlashOn) {
+                        cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                        flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_off_24px));
+                    } else {
+                        cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                        flash.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_flash_on_24px));
+                    }
+                }catch (Exception e){ }
 
             }
         });

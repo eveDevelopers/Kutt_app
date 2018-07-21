@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static android.support.v4.app.NotificationCompat.PRIORITY_MIN;
 
-public class TheService extends Service {
+public class  TheService extends Service {
 
 
 
@@ -122,12 +122,12 @@ public class TheService extends Service {
                                 // Set PendingIntent into Notification
                                 .setContentIntent(opp)
                                 // Set RemoteViews into Notification
-                                // .setContentTitle("New data in Clipboard")
+                                //.setContentTitle("New link in Clipboard !")
                                 // .setContentText("Copy??")
                                 //.addAction(R.drawable.ic_file_notification,"ADD",pIntent)
                                 //.setContentIntent(pIntent)
                                 .setAutoCancel(true)
-                                .setContent(remoteViews)
+                                //.setContent(remoteViews)
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                         //remoteViews.setOnClickPendingIntent(R.id.not,opp);
@@ -148,14 +148,13 @@ public class TheService extends Service {
                                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                                 PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                         PendingIntent.FLAG_UPDATE_CURRENT);
-                                                if (cc.length() > 35) {
-                                                    remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
-                                                } else {
-                                                    remoteViews.setTextViewText(R.id.linka, cc);
-                                                }
+                                                builder.setContentText(cc);
                                                 remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                                                 remoteViews.setOnClickPendingIntent(R.id.image1, share);
                                                 remoteViews.setTextViewText(R.id.title, response);
+                                                builder.setContentTitle(response);
+                                                builder.addAction(R.id.save,"SAVE",pIntent);
+                                                builder.addAction(R.drawable.ic_baseline_share_24px,"SHARE",share);
                                                 NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                                 // Build Notification with Notification Manager
                                                 notificationmanager.notify(0, builder.build());
@@ -176,14 +175,13 @@ public class TheService extends Service {
                                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                                 PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                         PendingIntent.FLAG_UPDATE_CURRENT);
-                                                if (cc.length() > 35) {
-                                                    remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
-                                                } else {
-                                                    remoteViews.setTextViewText(R.id.linka, cc);
-                                                }
-                                                remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                                                remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                                remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
+                                                builder.setContentText(cc);
+                                                //remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                                //remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                              //  remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
+                                                builder.setContentTitle("Save Link ?");
+                                                builder.addAction(R.id.save,"SAVE",pIntent);
+                                                builder.addAction(R.drawable.ic_baseline_share_24px,"SHARE",share);
                                                 NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                                 // Build Notification with Notification Manager
                                                 notificationmanager.notify(0, builder.build());
@@ -211,14 +209,13 @@ public class TheService extends Service {
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
-                                if (a.length() > 35) {
-                                    remoteViews.setTextViewText(R.id.linka, a.substring(0, 32) + "...");
-                                } else {
-                                    remoteViews.setTextViewText(R.id.linka, a);
-                                }
-                                remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                                remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                remoteViews.setTextViewText(R.id.title, "KUTT");
+                                builder.setContentText(a);
+                                //remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                //remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                //remoteViews.setTextViewText(R.id.title, "KUTT");
+                                builder.setContentTitle("KUTT");
+                                builder.addAction(R.id.save,"SAVE",pIntent);
+                                builder.addAction(R.drawable.ic_baseline_share_24px,"SHARE",share);
                                 NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                 // Build Notification with Notification Manager
                                 notificationmanager.notify(0, builder.build());
@@ -239,14 +236,13 @@ public class TheService extends Service {
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
                                             PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
-                                            if (cc.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
-                                            } else {
-                                                remoteViews.setTextViewText(R.id.linka, cc);
-                                            }
-                                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                            remoteViews.setTextViewText(R.id.title, response);
+                                            builder.setContentText(cc);
+                                           // remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                            //remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                            //remoteViews.setTextViewText(R.id.title, response);
+                                            builder.setContentTitle(response);
+                                            builder.addAction(R.id.save,"SAVE",pIntent);
+                                            builder.addAction(R.drawable.ic_baseline_share_24px,"SHARE",share);
                                             NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                             // Build Notification with Notification Manager
                                             notificationmanager.notify(0, builder.build());
@@ -267,14 +263,13 @@ public class TheService extends Service {
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
                                             PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
-                                            if (cc.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
-                                            } else {
-                                                remoteViews.setTextViewText(R.id.linka, cc);
-                                            }
-                                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                            remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
+                                            builder.setContentText(cc);
+                                           // remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                            //remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                            //remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
+                                            builder.setContentTitle("Save Link ?");
+                                            builder.addAction(R.id.save,"SAVE",pIntent);
+                                            builder.addAction(R.drawable.ic_baseline_share_24px,"SHARE",share);
                                             NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                             // Build Notification with Notification Manager
                                             notificationmanager.notify(0, builder.build());
