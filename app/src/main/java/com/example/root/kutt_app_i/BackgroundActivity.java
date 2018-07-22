@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +46,8 @@ public class BackgroundActivity extends AppCompatActivity {
     TextView title_text,nomatch;
     LinearLayout default_title,search_title;
     EditText search_box;
-    int fa,dd,sa;
+    int fa,dd,sa,pre_state;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     public static String s;
@@ -73,6 +75,7 @@ public class BackgroundActivity extends AppCompatActivity {
         SearchItems = new ArrayList<>();
         backup_list = new ArrayList<>();
         backup_list_fav = new ArrayList<>();
+
         fa=0;sa=0;
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
         if(not.getInt("enable",1)==1){
@@ -91,6 +94,47 @@ public class BackgroundActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                if(sa == 0){
+                    if(fa == 0){
+                        showData();
+                    }else {
+                        favdata();
+                    }
+                }
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+       /* mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                mSwipeRefreshLayout.setRefreshing(true);
+                if(sa == 0){
+                    if(fa == 0){
+                        showData();
+                    }else {
+                        favdata();
+                    }
+                }
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });*/
+
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,12 +269,16 @@ public class BackgroundActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 final RecyclerView.ViewHolder holder = viewHolder;
+                final int position = holder.getAdapterPosition();
                 dd=0;
                 String message;
+                final ListenItem item_listen = listenItems.get(position);
                 if(fa==0){
                     message="link deleted!";
+                    pre_state=0;
                 }else {
                     message="link removed from favorites!";
+                    pre_state=1;
                 }
                 Snackbar snackbar = Snackbar
                         .make(findViewById(R.id.layout), message, Snackbar.LENGTH_LONG)
@@ -240,7 +288,7 @@ public class BackgroundActivity extends AppCompatActivity {
                                 dd=1;
                                 Snackbar snackbar1 = Snackbar.make(findViewById(R.id.layout), "Link restored!", Snackbar.LENGTH_SHORT);
                                 snackbar1.show();
-                                adapter.notifyItemChanged(holder.getAdapterPosition());
+                                adapter.notifyItemChanged(position);
                             }
                         });
 
@@ -248,10 +296,12 @@ public class BackgroundActivity extends AppCompatActivity {
                 snackbar.addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        if ((event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT && dd==0) || (event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE && dd==0)) {
+                        if (dd == 0) {
                             try {
-                                diss(holder.getAdapterPosition());
-                            }catch (Exception e){}
+                                diss(item_listen.getLink(),pre_state,holder.getAdapterPosition());
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     }
 
@@ -336,16 +386,15 @@ public class BackgroundActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
     }
-    public void diss(int pos)
+    public void diss(String link,int state,int pos)
     {
-        final ListenItem listen = listenItems.get(pos);
 
         myDb = new DatabaseHelper(this);
-        if(fa==0){
-            myDb.deletelink(listen.getLink());
+        if(state == 0){
+            myDb.deletelink(link);
            // Toast.makeText(this,"Link deleted!!",Toast.LENGTH_LONG).show();
         }else {
-            myDb.updateNormal(listen.getLink());
+            myDb.updateNormal(link);
             //Toast.makeText(this,"Removed from favorites",Toast.LENGTH_LONG).show();
         }
 
