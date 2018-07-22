@@ -257,7 +257,9 @@ public class QrActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.putExtra("barcode",barcodes.valueAt(0));
                     setResult(RESULT_OK,intent);
-                    cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    if(isFlashOn) {
+                        cameraSource.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    }
                     finish();
 
 

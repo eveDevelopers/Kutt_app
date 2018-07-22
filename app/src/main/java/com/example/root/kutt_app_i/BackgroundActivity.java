@@ -49,8 +49,7 @@ public class BackgroundActivity extends AppCompatActivity {
 
 
     public static String s;
-    private List<ListenItem> listenItems;
-    private List<ListenItem> SearchItems;
+    private List<ListenItem> listenItems,SearchItems,backup_list_fav,backup_list;
 
 
     @Override
@@ -72,6 +71,8 @@ public class BackgroundActivity extends AppCompatActivity {
         nomatch = findViewById(R.id.nomatch);
         listenItems = new ArrayList<>();
         SearchItems = new ArrayList<>();
+        backup_list = new ArrayList<>();
+        backup_list_fav = new ArrayList<>();
         fa=0;sa=0;
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
         if(not.getInt("enable",1)==1){
@@ -247,7 +248,7 @@ public class BackgroundActivity extends AppCompatActivity {
                 snackbar.addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT && dd==0) {
+                        if ((event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT && dd==0) || (event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE && dd==0)) {
                             try {
                                 diss(holder.getAdapterPosition());
                             }catch (Exception e){}
