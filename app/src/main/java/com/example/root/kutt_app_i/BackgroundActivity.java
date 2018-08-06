@@ -227,7 +227,7 @@ public class BackgroundActivity extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BackgroundActivity.this,Account.class);
+                Intent i = new Intent(BackgroundActivity.this,GoogleAuth.class);
                 startActivity(i);
             }
         });
