@@ -99,6 +99,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  res;
 
     }
+    public  int getStar(int pos){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        Cursor res = sqLiteDatabase.rawQuery("select STAR from " + TBNAME + " where "+ COL1 + " =" + pos ,null);
+        res.moveToFirst();
+        return  res.getInt(0);
+
+    }
     public  boolean updateData(String link){
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

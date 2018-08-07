@@ -134,7 +134,7 @@ public class GoogleAuth extends AppCompatActivity {
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("idTocken",idToken );
-                    params.put("url","http://xvideos.com");
+                    params.put("url","http://ex.com");
                     return params;
                 }
             };

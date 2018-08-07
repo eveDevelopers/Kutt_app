@@ -59,11 +59,15 @@ public class  TheService extends Service {
             notificationManager.createNotificationChannel(notificationChannel);
 
 
+            Intent open = new Intent(TheService.this, Account.class);
+            PendingIntent opp = PendingIntent.getActivity(getApplicationContext(), 0, open,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID_B);
             Notification notification = notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setPriority(PRIORITY_MIN)
                     .setSmallIcon(R.drawable.notify)
+                    .setContentIntent(opp)
                     .setContentText("Notification will appear when you copy a link to clipboard !!")
                     .setContentTitle("Kutt is running in Background")
                     .setCategory(Notification.CATEGORY_SERVICE)

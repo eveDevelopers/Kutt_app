@@ -120,6 +120,14 @@ public class PagerFragment extends Fragment {
             deleted_link.setVisibility(View.VISIBLE);
             present_link.setVisibility(View.GONE);
         }else {
+            int star = myDb.getStar(this.pos);
+            if(star == 1){
+                fav.setVisibility(View.VISIBLE);
+                not_fav.setVisibility(View.GONE);
+            }else {
+                fav.setVisibility(View.GONE);
+                not_fav.setVisibility(View.VISIBLE);
+            }
             this.link_view.setText(this.link);
             deleted_link.setVisibility(View.GONE);
             present_link.setVisibility(View.VISIBLE);
@@ -191,13 +199,7 @@ public class PagerFragment extends Fragment {
             }
         }
 
-        if(fav_int == 1){
-            fav.setVisibility(View.VISIBLE);
-            not_fav.setVisibility(View.GONE);
-        }else {
-            fav.setVisibility(View.GONE);
-            not_fav.setVisibility(View.VISIBLE);
-        }
+
 
 
 

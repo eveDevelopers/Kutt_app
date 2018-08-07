@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -42,11 +44,12 @@ public class BackgroundActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private ProgressBar progressBar;
-    ImageView favorite,nfavorite,plus,profile,close,search;
+    ImageView favorite,nfavorite,profile,close,search;
+    FloatingActionButton plus;
     TextView title_text,nomatch;
     LinearLayout default_title,search_title;
     EditText search_box;
-    int fa,dd,sa,pre_state;
+    int fa,dd,sa,pre_state,state;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
 
@@ -98,7 +101,6 @@ public class BackgroundActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mSwipeRefreshLayout.setRefreshing(true);
                 if(sa == 0){
                     if(fa == 0){
                         showData();
@@ -106,9 +108,13 @@ public class BackgroundActivity extends AppCompatActivity {
                         favdata();
                     }
                 }
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                },500);
             }
         });
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
@@ -119,19 +125,9 @@ public class BackgroundActivity extends AppCompatActivity {
        /* mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-
-                mSwipeRefreshLayout.setRefreshing(true);
-                if(sa == 0){
-                    if(fa == 0){
-                        showData();
-                    }else {
-                        favdata();
-                    }
-                }
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
+
         });*/
 
 
@@ -227,7 +223,7 @@ public class BackgroundActivity extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BackgroundActivity.this,GoogleAuth.class);
+                Intent i = new Intent(BackgroundActivity.this,Account.class);
                 startActivity(i);
             }
         });
@@ -273,6 +269,7 @@ public class BackgroundActivity extends AppCompatActivity {
                 dd=0;
                 String message;
                 final ListenItem item_listen = listenItems.get(position);
+
                 if(fa==0){
                     message="link deleted!";
                     pre_state=0;
@@ -397,10 +394,16 @@ public class BackgroundActivity extends AppCompatActivity {
             myDb.updateNormal(link);
             //Toast.makeText(this,"Removed from favorites",Toast.LENGTH_LONG).show();
         }
-
-        listenItems.remove(pos);
-        adapter.notifyItemRemoved(pos);
-
+        if(fa != state){
+            if( fa == 0 ){
+                showData();
+            }else {
+                favdata();
+            }
+        }else {
+            listenItems.remove(pos);
+            adapter.notifyItemRemoved(pos);
+        }
 
 
 
