@@ -43,7 +43,7 @@ public class Account extends AppCompatActivity {
     SignInButton sign_in;
     Switch notification;
     TextView name;
-    ImageView close;
+    ImageView close,signout;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     TextView mStatusTextView;
@@ -55,6 +55,7 @@ public class Account extends AppCompatActivity {
         sign_in = findViewById(R.id.sign_in);
         notification = findViewById(R.id.notification);
         close = findViewById(R.id.close);
+        signout = findViewById(R.id.logout);
         name = findViewById(R.id.name);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,6 +73,12 @@ public class Account extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
             }
         });
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
@@ -204,13 +211,17 @@ public class Account extends AppCompatActivity {
             sign_in.setVisibility(View.GONE);
             name.setVisibility(View.VISIBLE);
             name.setText(account.getDisplayName());
+            signout.setVisibility(View.VISIBLE);
 
 
 
         }
         else
         {
-           // mStatusTextView.setText("poi pani nokk hei");
+            sign_in.setVisibility(View.VISIBLE);
+            name.setVisibility(View.GONE);
+            signout.setVisibility(View.GONE);
+            name.setText("");
         }
 
 
