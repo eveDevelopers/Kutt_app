@@ -81,13 +81,13 @@ public class BackgroundActivity extends AppCompatActivity {
 
         fa=0;sa=0;
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
-        if(not.getInt("enable",1)==1){
+        /*if(not.getInt("enable",1)==1){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
             }else {
                 getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
             }
-        }
+        }*/
         myDb = new DatabaseHelper(this);
 
         recyclerView =  findViewById(R.id.recyclerView);

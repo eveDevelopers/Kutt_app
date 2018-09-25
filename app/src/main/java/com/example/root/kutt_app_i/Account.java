@@ -100,11 +100,14 @@ public class Account extends AppCompatActivity {
                if(isChecked){
                    editor.putInt("enable",1);
                    editor.apply();
-                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                   /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                        getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
                    }else {
                        getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
-                   }
+                   }*/
+                   getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
+                   getApplicationContext().startService(new Intent(getApplicationContext(), TheService.class));
+                   //ServiceJob.enqueueWork(getApplicationContext(),getIntent());
                }else {
                    editor.putInt("enable",0);
                    editor.apply();
@@ -113,6 +116,7 @@ public class Account extends AppCompatActivity {
                    //}
 
                    getApplicationContext().stopService(new Intent(getApplicationContext(), TheService.class));
+
                    Toast.makeText(Account.this,"Service Stopped!",Toast.LENGTH_SHORT).show();
                }
            }

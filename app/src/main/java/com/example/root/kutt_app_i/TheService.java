@@ -46,7 +46,7 @@ public class  TheService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Personal notifications ";
             String descriptions = "Include Personal notifications";
             int importance = NotificationManager.IMPORTANCE_LOW;
@@ -73,7 +73,7 @@ public class  TheService extends Service {
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .build();
             startForeground(101, notification);
-        }
+        }*/
         final ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
 
         clipboard.addPrimaryClipChangedListener( new ClipboardManager.OnPrimaryClipChangedListener() {

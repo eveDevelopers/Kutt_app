@@ -60,6 +60,7 @@ public class SensorService extends Service implements SensorEventListener {
     public void onSensorChanged(SensorEvent sensorEvent) {
              if(!isMyServiceRunning(TheService.class) && not.getInt("enable",1) == 1){
                  Log.e("Main service","not running");
+                // ServiceJob.enqueueWork(getApplicationContext(),new Intent());
                  Intent intent=new Intent(this,TheService.class);
                  startService(intent);
              }
